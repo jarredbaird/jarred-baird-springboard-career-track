@@ -77,12 +77,16 @@ function handleCardClick(event) {
     return 0;
   }
 
-  // ...set the background color to the class name...
+  // if the user isn't clicking wildly all over the page...
   if (currentMatch.length < 2) {
+  // ...set the background color to the class name...
     event.target.style.backgroundColor = event.target.className;
     // ...add the color to the currentMatch array...
     currentMatch.push(event.target.className);
   }
+
+  // ...and don't do anything else until a match happens or
+  // the two selected mismatched tiles flip over
   else {
     return 0;
   }
