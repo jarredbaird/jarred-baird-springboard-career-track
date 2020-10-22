@@ -66,7 +66,7 @@ function findSpotForCol(x) {
     }
   }
   console.log("made it past loop");
-  return 0;
+  return;
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
