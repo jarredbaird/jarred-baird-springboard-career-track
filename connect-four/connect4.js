@@ -59,11 +59,13 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
   // TODO: write the real version of this, rather than always returning 0
-  for (let y = HEIGHT-1; y > 0; y--) {
-    if(!board[x][y]) {
+  for (let y = HEIGHT-1; y >= 0; y--) {
+    console.log("y is " + y + " x is " + x);
+    if(!board[y][x]) {
       return y;
     }
   }
+  console.log("made it past loop");
   return 0;
 }
 
@@ -91,6 +93,7 @@ function endGame(msg) {
 
 function handleClick(evt) {
   // get x from ID of clicked cell
+  console.log(evt.target.id);
   let x = +evt.target.id;
 
   // get next spot in column (if none, ignore click)
@@ -101,7 +104,7 @@ function handleClick(evt) {
 
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
-  board[x][y] = currPlayer;
+  board[y][x] = currPlayer;
   placeInTable(y, x);
 
   // check for win
