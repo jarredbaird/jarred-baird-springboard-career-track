@@ -9,6 +9,7 @@ class Game {
   constructor(HEIGHT = 6, WIDTH = 7) {
     this.HEIGHT = HEIGHT;
     this.WIDTH = WIDTH;
+    this.gameover = false;
     this.currPlayer = 1; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.makeBoard();
@@ -77,6 +78,11 @@ class Game {
   /** handleClick: handle click of column top to play piece */
 
   handleClick(evt) {
+
+    // check to see if the game is over or not...
+
+    if (this.gameover) return;
+
     // get x from ID of clicked cell
     const x = +evt.target.id;
 
@@ -92,11 +98,13 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
+      this.gameover = true;
       return this.endGame(`Player ${this.currPlayer} won!`);
     }
     
     // check for tie
     if (this.board.every(row => row.every(cell => cell))) {
+      this.gameover = true;
       return this.endGame('Tie!');
     }
       
@@ -151,4 +159,7 @@ class Game {
   }
 }
 
-new Game(6, 7);   // assuming constructor takes height, width
+document.querySelector("button").addEventListener("click", function() {
+  document.querySelector("#board").innerHTML = "";
+  const game = new Game(6, 7);   // assuming constructor takes height, width
+})
