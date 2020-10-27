@@ -6,11 +6,12 @@
  */
 
 class Game {
-  constructor(HEIGHT = 6, WIDTH = 7) {
+  constructor(p1, p2, HEIGHT = 6, WIDTH = 7) {
     this.HEIGHT = HEIGHT;
     this.WIDTH = WIDTH;
+    this.players = [p1, p2];
     this.gameover = false;
-    this.currPlayer = 1; // active player: 1 or 2
+    this.currPlayer = p1; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.makeBoard();
     this.makeHtmlBoard();
@@ -62,7 +63,7 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.style.backgroundColor = this.currPlayer.color;
     piece.style.top = -50 * (y + 2);
 
     const spot = document.getElementById(`${y}-${x}`);
@@ -71,8 +72,8 @@ class Game {
 
   /** endGame: announce game end */
 
-    endGame(msg) {
-      alert(msg);
+  endGame(msg) {
+    setTimeout(() => {alert(msg)}, 300);
   }
 
   /** handleClick: handle click of column top to play piece */
@@ -93,13 +94,13 @@ class Game {
     }
 
     // place piece in board and add to HTML table
-    this.board[y][x] = this.currPlayer;
+    this.board[y][x] = this.currPlayer.color;
     this.placeInTable(y, x);
     
     // check for win
     if (this.checkForWin()) {
       this.gameover = true;
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`Player ${this.currPlayer.color} won!`);
     }
     
     // check for tie
@@ -109,7 +110,8 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = 
+      this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
   }
 
   /** findSpotForCol: given column x, return top empty y (null if filled) */
@@ -137,7 +139,7 @@ class Game {
           y < this.HEIGHT &&
           x >= 0 &&
           x < this.WIDTH &&
-          this.board[y][x] === this.currPlayer
+          this.board[y][x] === this.currPlayer.color
       );
     }
 
@@ -159,7 +161,27 @@ class Game {
   }
 }
 
+class Player {
+  constructor (color) {
+    this.color = color;
+  }
+}
+
+function isColor(strColor){
+  var str = new Option().style;
+  str.color = strColor;
+  return str.color == strColor;
+}
+
 document.querySelector("button").addEventListener("click", function() {
+  console.log(isColor(document.querySelector("#player-1").value));
+  if (!(isColor(document.querySelector("#player-1").value) && 
+      isColor(document.querySelector("#player-2").value))) {
+      alert("Please pick a valid color");
+      return;
+  }
+  let p1 = new Player(document.querySelector("#player-1").value);
+  let p2 = new Player(document.querySelector("#player-2").value);
   document.querySelector("#board").innerHTML = "";
-  const game = new Game(6, 7);   // assuming constructor takes height, width
+  const game = new Game(p1, p2, 6, 7);   // assuming constructor takes height, width
 })
