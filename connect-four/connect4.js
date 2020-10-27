@@ -32,6 +32,7 @@ function makeHtmlBoard() {
   let htmlBoard = document.querySelector("#board");
 
   // TODO: add comment for this code
+  // add top column with event listener
   let top = document.createElement("tr");
   top.setAttribute("id", "column-top");
   top.addEventListener("click", handleClick);
@@ -44,6 +45,7 @@ function makeHtmlBoard() {
   htmlBoard.append(top);
 
   // TODO: add comment for this code
+  // create a data cell for the height and width of the board
   for (let y = 0; y < HEIGHT; y++) {
     const row = document.createElement("tr");
     for (let x = 0; x < WIDTH; x++) {
@@ -153,6 +155,7 @@ function checkForWin() {
   }
 
   // TODO: read and understand this code. Add comments to help you.
+  // Check for a win in four different
 
   for (let y = 0; y < HEIGHT; y++) {
     for (let x = 0; x < WIDTH; x++) {
