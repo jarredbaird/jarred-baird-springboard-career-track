@@ -1,0 +1,22 @@
+{
+  "name": "jarred",
+  "version": "1.0.0",
+  "description": "the first version",
+  "main": "index.html",
+  "dependencies": {
+    "cypress": "^5.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "google-chrome-stable index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarredbaird/jarredbaird.github.io/tree/master/connect-four-refactored"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "jarred",
+  "license": "ISC"
+}
