@@ -10,17 +10,97 @@
       integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+      integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
-    <h1>Dashboard:</h1>
-    <table class="table">
-      <thead>
-        <th>Name</th>
-        <th>Team</th>
-        <th>All Star</th>
-        <th>Remove</th>
-      </thead>
-    </table>
+    <div class="container-fluid">
+      <h1>Dashboard:</h1>
+      <table class="table table-striped">
+        <thead>
+          <th>Name</th>
+          <th>Team</th>
+          <th>All Star</th>
+          <th>Remove</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Steph</td>
+            <td>Warriors</td>
+            <td>Yes</td>
+            <td>
+              <a href="" class="btn btn-sm btn-danger"
+                ><i class="fas fa-trash-alt"></i
+              ></a>
+            </td>
+          </tr>
+          <tr>
+            <td>Lebron</td>
+            <td>Cavaliers</td>
+            <td>Yes</td>
+            <td>
+              <a href="" class="btn btn-sm btn-danger"
+                ><i class="fas fa-trash-alt"></i
+              ></a>
+            </td>
+          </tr>
+          <tr>
+            <td>Dwayne</td>
+            <td>Heat</td>
+            <td>Yes</td>
+            <td>
+              <a href="" class="btn btn-sm btn-danger"
+                ><i class="fas fa-trash-alt"></i
+              ></a>
+            </td>
+          </tr>
+          <tr>
+            <td>Kobe</td>
+            <td>Lakers</td>
+            <td>Yes <span class="badge badge-warning">Last</span></td>
+            <td>
+              <a href="" class="btn btn-sm btn-danger"
+                ><i class="fas fa-trash-alt"></i
+              ></a>
+            </td>
+          </tr>
+          <tr>
+            <td>Steph</td>
+            <td>Warriors</td>
+            <td>Yes <span class="badge badge-danger">Last</span></td>
+            <td>
+              <a href="" class="btn btn-sm btn-danger"
+                ><i class="fas fa-trash-alt"></i
+              ></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr />
+    <h2>Todos:</h2>
+    <div class="list-group">
+      <a href="" class="list-group-item list-group-item-success"
+        >Feel good about Bootstrap</a
+      >
+      <a href="" class="list-group-item list-group-item-info"
+        >Feel informed about Bootstrap</a
+      >
+      <a href="" class="list-group-item list-group-item-warning"
+        >Feel warned about Bootstrap</a
+      >
+      <a href="" class="list-group-item list-group-item-warning"
+        >Maybe I should read the docs</a
+      >
+      <a href="" class="list-group-item list-group-item-danger">Danger zone</a>
+      <a href="" class="list-group-item list-group-item-danger"
+        >I really should read the docs...</a
+      >
+    </div>
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
