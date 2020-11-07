@@ -1,0 +1,34 @@
+** PARTE UNO **
+
+What is HTTP?
+    Hypertext transfer protocol. Tells browsers how to get data from or to a server
+
+What is a URL?
+    Uniform Resource Locator. An address that indicates a resource on a network.
+What is DNS?
+    Domain Name System. Converts URLs into IP addresses.
+What is a query string?
+    Allows you to pass keys and values into the URL.
+What are two HTTP verbs and how are they different?
+    GET - get data from server; POST - send data to server
+What is an HTTP request?
+    A request from browser to server using HTTP
+What is an HTTP response?
+    A response from server to browser using HTTP
+What is an HTTP header? Give a couple examples of request and response headers you have seen.
+    Contains additional information about a request or response
+    Accept, Accept-language
+    Content-Type, Cache-Control
+What are the processes that happen when you type “http://somesite.com/some/page.html” into a browser?
+    I'm assuming that "Enter" or "Go" is them pressed...
+    1. DNS resolves URL to IP address.
+    2. Request (URLs in the browser will ALWAYS be GET requests) bounces from router to router until it reaches the intended server.
+    3. Server processes and does what you tell it to do
+    4. Server sends response back to you.
+    5. Browser analyzes body of response and sends additional requests, if needed
+    6. Browser takes responses, creates a DOM, and renders the response on your screen. Voila!
+
+** PARTE DOS **
+curl https://icanhazdadjoke.com/search?term=pirate
+dig icanhazdadjoke.com
+blah blah blah. Done.
