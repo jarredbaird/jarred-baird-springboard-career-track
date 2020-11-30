@@ -15,6 +15,7 @@
   </head>
 
   <body>
+    <!-- Navbar -->
     <nav>
       <div class="navbar-brand">
         <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
@@ -33,6 +34,8 @@
         <a class="hidden" href="#" id="nav-logout"><small>(logout)</small></a>
       </div>
     </nav>
+
+    <!-- Create article form -->
     <section class="articles-container container">
       <form action="" class="hidden" id="submit-form">
         <div>
@@ -50,31 +53,28 @@
         <button type="submit">submit</button>
         <hr />
       </form>
+
+      <!-- Show "Loading" while user waits for articles to load -->
       <article>
-        <ol id="all-articles-list" class="articles-list">
-          <h3>Loading...</h3>
-        </ol>
+        <h3>Loading...</h3>
       </article>
+
+      <!-- Where all stories go -->
+      <article>
+        <ul id="all-articles" class="hidden articles-list"></ul>
+      </article>
+
+      <!-- Where all stories favorited by the user go -->
       <article>
         <ul id="favorited-articles" class="hidden articles-list"></ul>
       </article>
-      <article>
-        <ul id="filtered-articles" class="hidden articles-list"></ul>
-      </article>
+
+      <!-- Where all stories created by the user go -->
       <article>
         <ul id="my-articles" class="hidden articles-list"></ul>
       </article>
     </section>
-    <section class="edit-article-container container">
-      <form action="#" id="edit-article-form" class="hidden" method="post">
-        <h4>Article Information</h4>
-        <div class="edit-input">
-          <label for="edit-title">Title</label>
-          <input id="edit-title" type="text" />
-          <button type="submit">change</button>
-        </div>
-      </form>
-    </section>
+
     <section class="account-forms-container container">
       <form
         action="#"

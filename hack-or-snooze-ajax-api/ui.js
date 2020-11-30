@@ -1,8 +1,8 @@
 $(async function () {
   // cache some selectors we'll be using quite a bit
-  const $allStoriesList = $("#all-articles-list");
+  const $allStoriesList = $("#all-articles");
   const $submitForm = $("#submit-form");
-  const $filteredArticles = $("#filtered-articles");
+  const $allArticles = $("#all-articles");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
   const $ownStories = $("#my-articles");
@@ -181,7 +181,7 @@ $(async function () {
     const elementsArr = [
       $submitForm,
       $allStoriesList,
-      $filteredArticles,
+      $allArticles,
       $ownStories,
       $loginForm,
       $createAccountForm,
