@@ -8,6 +8,7 @@ $(async function () {
   const $ownStories = $("#my-articles");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
+  const $navMain = $(".main-nav-links");
 
   // global storyList variable
   let storyList = null;
@@ -191,6 +192,7 @@ $(async function () {
   function showNavForLoggedInUser() {
     $navLogin.hide();
     $navLogOut.show();
+    $navMain.show();
   }
 
   /* simple function to pull the hostname from a URL */
@@ -217,3 +219,8 @@ $(async function () {
     }
   }
 });
+
+/* showLoginPage: stop showing articles and pull up a login page */
+function showLoginPage() {
+  $allStoriesList.innerHTML = "";
+}
