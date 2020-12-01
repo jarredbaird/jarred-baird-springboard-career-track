@@ -219,8 +219,3 @@ $(async function () {
     }
   }
 });
-
-/* showLoginPage: stop showing articles and pull up a login page */
-function showLoginPage() {
-  $allStoriesList.innerHTML = "";
-}
