@@ -1,14 +1,13 @@
 $(async function () {
   // cache some selectors we'll be using quite a bit
-  const $allStoriesList = $("#all-articles");
+  const $allStoriesList = $("#all-stories-list");
   const $submitForm = $("#submit-form");
-  const $allArticles = $("#all-articles");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("#my-articles");
+  const $myCreatedStories = $("#my-created-stories");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
-  const $navMain = $(".main-nav-links");
+  const $mainNavLinks = $(".main-nav-links");
 
   // global storyList variable
   let storyList = null;
@@ -182,7 +181,7 @@ $(async function () {
       $submitForm,
       $allStoriesList,
       $allArticles,
-      $ownStories,
+      $myCreatedStories,
       $loginForm,
       $createAccountForm,
     ];
@@ -192,7 +191,7 @@ $(async function () {
   function showNavForLoggedInUser() {
     $navLogin.hide();
     $navLogOut.show();
-    $navMain.show();
+    $mainNavLinks.show();
   }
 
   /* simple function to pull the hostname from a URL */

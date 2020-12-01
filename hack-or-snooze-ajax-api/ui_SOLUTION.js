@@ -1,13 +1,13 @@
 $(async function () {
   // cache some selectors we'll be using quite a bit
   const $body = $("body");
-  const $allStoriesList = $("#all-articles-list");
+  const $allStoriesList = $("#all-stories-list-list");
   const $submitForm = $("#submit-form");
-  const $favoritedStories = $("#favorited-articles");
+  const $favoritedStories = $("#my-favorite-stories");
   const $filteredArticles = $("#filtered-articles");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("#my-articles");
+  const $myCreatedStories = $("#my-created-stories");
   const $navLogin = $("#nav-login");
   const $navWelcome = $("#nav-welcome");
   const $navUserProfile = $("#nav-user-profile");
@@ -209,7 +209,7 @@ $(async function () {
     if (currentUser) {
       $userProfile.hide();
       generateMyStories();
-      $ownStories.show();
+      $myCreatedStories.show();
     }
   });
 
@@ -217,7 +217,7 @@ $(async function () {
    * Event Handler for Deleting a Single Story
    */
 
-  $ownStories.on("click", ".trash-can", async function (evt) {
+  $myCreatedStories.on("click", ".trash-can", async function (evt) {
     // get the Story's ID
     const $closestLi = $(evt.target).closest("li");
     const storyId = $closestLi.attr("id");
@@ -375,21 +375,21 @@ $(async function () {
   }
 
   function generateMyStories() {
-    $ownStories.empty();
+    $myCreatedStories.empty();
 
     // if the user has no stories that they have posted
-    if (currentUser.ownStories.length === 0) {
-      $ownStories.append("<h5>No stories added by user yet!</h5>");
+    if (currentUser.myCreatedStories.length === 0) {
+      $myCreatedStories.append("<h5>No stories added by user yet!</h5>");
     } else {
       // for all of the user's posted stories
-      for (let story of currentUser.ownStories) {
+      for (let story of currentUser.myCreatedStories) {
         // render each story in the list
         let ownStoryHTML = generateStoryHTML(story, true);
-        $ownStories.append(ownStoryHTML);
+        $myCreatedStories.append(ownStoryHTML);
       }
     }
 
-    $ownStories.show();
+    $myCreatedStories.show();
   }
 
   /* hide all elements in elementsArr */
@@ -399,7 +399,7 @@ $(async function () {
       $submitForm,
       $allStoriesList,
       $filteredArticles,
-      $ownStories,
+      $myCreatedStories,
       $userProfile,
       $favoritedStories,
       $loginForm,
