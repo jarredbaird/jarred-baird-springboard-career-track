@@ -47,6 +47,41 @@ class StoryList {
     // TODO - Implement this functions!
     // this function should return the newly created story so it can be used in
     // the script.js file where it will be appended to the DOM
+
+    const response = await axios.post(`${BASE_URL}/stories`, {
+      token: localStorage.getItem("token"),
+      story: {
+        author: newStory.author,
+        title: newStory.title,
+        url: newStory.url,
+      },
+    });
+    return response;
+  }
+
+  /**
+   * Method to make a DELETE request to /stories and delete the story from the list
+   * - user - the current instance of User who will delete the story
+   * - newStory - a new story object for the API with title, author, and url
+   *
+   * Returns the deleted story object
+   */
+
+  async deleteStory(storyId) {
+    console.log(localStorage.getItem("token"));
+    const response = await axios({
+      url: `${BASE_URL}/stories/${storyId}`,
+      method: "DELETE",
+      data: { token: localStorage.getItem("token") },
+    });
+    return response.data.story;
+  }
+
+  static async getStory(storyId) {
+    const response = await axios.get(`${BASE_URL}/stories/${storyId}`, {
+      token: localStorage.getItem("token"),
+    });
+    return response.data.story;
   }
 }
 
@@ -63,9 +98,9 @@ class User {
     this.updatedAt = userObj.updatedAt;
 
     // these are all set to defaults, not passed in by the constructor
-    this.loginToken = "";
-    this.favorites = [];
-    this.myCreatedStories = [];
+    this.loginToken = userObj.loginToken;
+    this.favorites = userObj.favorites;
+    this.myCreatedStories = userObj.myCreatedStories;
   }
 
   /* Create and return a new user.
@@ -157,6 +192,17 @@ class User {
       (s) => new Story(s)
     );
     return existingUser;
+  }
+
+  static async modifyFavorite(method, storyId) {
+    const localToken = localStorage.getItem("token");
+    const localUser = localStorage.getItem("username");
+    const response = await axios({
+      url: `${BASE_URL}/users/${localUser}/favorites/${storyId}`,
+      method: method,
+      data: { token: localToken },
+    });
+    return response.data.user;
   }
 }
 

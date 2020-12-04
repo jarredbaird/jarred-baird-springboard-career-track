@@ -17,6 +17,7 @@
   <body>
     <!-- Navbar -->
     <nav>
+      <!-- All actions available to user -->
       <div class="navbar-brand">
         <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
       </div>
@@ -28,8 +29,9 @@
         |
         <a class="nav-link" href="#" id="nav-my-stories">my stories</a>
       </div>
+      <!-- Login/logout options -->
       <div class="nav-right" id="nav-welcome">
-        <a class="nav-link" href="#" id="nav-login">login/signup</a>
+        <a class="nav-link" href="#" id="nav-login-signup">login/signup</a>
         <a class="nav-link" href="#" id="nav-user-profile"></a>
         <a class="hidden" href="#" id="nav-logout"><small>(logout)</small></a>
       </div>
@@ -54,6 +56,7 @@
         <hr />
       </form>
 
+      <!-- Section for showing articles -->
       <article>
         <!-- Show "Loading" while user waits for articles to load -->
         <ul id="loading-msg" class="articles-list">
@@ -61,17 +64,19 @@
         </ul>
 
         <!-- Where all stories go -->
-        <ul id="all-stories-list" class="hidden articles-list"></ul>
+        <ol id="all-stories-list" class="hidden articles-list"></ol>
 
         <!-- Where all stories favorited by the user go -->
-        <ul id="my-favorite-stories" class="hidden articles-list"></ul>
+        <ol id="my-favorite-stories" class="hidden articles-list"></ol>
 
         <!-- Where all stories created by the user go -->
-        <ul id="my-created-stories" class="hidden articles-list"></ul>
+        <ol id="my-created-stories" class="hidden articles-list"></ol>
       </article>
     </section>
 
+    <!-- Account-Related Forms -->
     <section class="account-forms-container container">
+      <!-- Login Form -->
       <form
         action="#"
         id="login-form"
@@ -90,9 +95,11 @@
         <button type="submit">login</button>
         <hr />
       </form>
+
+      <!-- Create Account Form -->
       <form
         action="#"
-        id="create-account-form"
+        id="signup-form"
         class="account-form hidden"
         method="post"
       >
@@ -112,7 +119,7 @@
         <button type="submit">create account</button>
       </form>
     </section>
-    <section id="user-profile" class="container hidden">
+    <section id="user-profile" class="hidden">
       <h4>User Profile Info</h4>
       <section>
         <div id="profile-name">Name:</div>

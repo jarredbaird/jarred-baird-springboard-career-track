@@ -1,28 +1,36 @@
+// global storyList variable
+let storyList = null;
+
+// global user variable
+let currentUser = null;
+
+let localToken = localStorage.getItem("token");
+let localUser = localStorage.getItem("username");
+
 $(async function () {
   // cache some selectors we'll be using quite a bit
+  const $loadingMsg = $("#loading-msg");
   const $allStoriesList = $("#all-stories-list");
   const $submitForm = $("#submit-form");
   const $loginForm = $("#login-form");
-  const $createAccountForm = $("#create-account-form");
+  const $signupForm = $("#signup-form");
   const $myCreatedStories = $("#my-created-stories");
-  const $navLogin = $("#nav-login");
+  const $navLoginSignup = $("#nav-login-signup");
   const $navLogOut = $("#nav-logout");
   const $mainNavLinks = $(".main-nav-links");
+  const $navUserProfile = $("#nav-user-profile");
 
-  // global storyList variable
-  let storyList = null;
+  currentUser = await User.getLoggedInUser(localToken, localUser);
 
-  // global user variable
-  let currentUser = null;
-
-  await checkIfLoggedIn();
+  displayNav();
+  await refreshStoryList();
 
   /**
    * Event listener for logging in.
    *  If successful, will setup the user instance
    */
 
-  $loginForm.on("submit", async function (evt) {
+  async function login(evt) {
     evt.preventDefault(); // no page-refresh on submit
 
     // grab the username and password
@@ -34,16 +42,21 @@ $(async function () {
 
     // set the global user to the user instance
     currentUser = userInstance;
+    displayNav();
+    $loginForm.trigger("reset");
+    $signupForm.trigger("reset");
     syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
-  });
+    await refreshStoryList();
+  }
+
+  $loginForm.on("submit", login);
 
   /**
    * Event listener for signing up.
    *  If successful, will setup a new user instance
    */
 
-  $createAccountForm.on("submit", async function (evt) {
+  async function signup(evt) {
     evt.preventDefault(); // no page refresh
 
     // grab the required fields
@@ -53,100 +66,165 @@ $(async function () {
 
     // call the create method, which calls the API and then builds a new user instance
     const newUser = await User.create(username, password, name);
-
     currentUser = newUser;
+    if (currentUser) {
+      displayNav();
+    }
+    $loginForm.trigger("reset");
+    $signupForm.trigger("reset");
     syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
-  });
+    await refreshStoryList();
+  }
+
+  $signupForm.on("submit", signup);
 
   /**
    * Log Out Functionality
    */
 
-  $navLogOut.on("click", function () {
+  function logout() {
     // empty out local storage
     localStorage.clear();
     // refresh the page, clearing memory
     location.reload();
-  });
+    currentUser = "";
+    displayNav();
+  }
+  $navLogOut.on("click", logout);
 
   /**
    * Event Handler for Clicking Login
    */
 
-  $navLogin.on("click", function () {
-    // Show the Login and Create Account Forms
+  function showLoginAndSignUpForms() {
+    // Show the Login and Signup Forms
+    hideElements();
     $loginForm.slideToggle();
-    $createAccountForm.slideToggle();
-    $allStoriesList.toggle();
-  });
+    $signupForm.slideToggle();
+  }
+  $navLoginSignup.on("click", showLoginAndSignUpForms);
 
   /**
    * Event handler for Navigation to Homepage
    */
 
-  $("body").on("click", "#nav-all", async function () {
-    hideElements();
-    await generateStories();
-    $allStoriesList.show();
-  });
+  $("body").on("click", "#nav-all", refreshStoryList);
 
   /**
-   * On page load, checks local storage to see if the user is already logged in.
-   * Renders page information accordingly.
+   * Event handler for revealing story submission form
    */
 
-  async function checkIfLoggedIn() {
-    // let's see if we're logged in
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
+  function showSubmitForm() {
+    hideElements();
+    $submitForm.slideToggle();
+  }
 
-    // if there is a token in localStorage, call User.getLoggedInUser
-    //  to get an instance of User with the right details
-    //  this is designed to run once, on page load
-    currentUser = await User.getLoggedInUser(token, username);
-    await generateStories();
+  $("body").on("click", "#nav-submit-story", showSubmitForm);
 
-    if (currentUser) {
-      showNavForLoggedInUser();
+  /**
+   * Event handler for creating a new story
+   */
+  async function submitStoryToStoryList(evt) {
+    evt.preventDefault(); // no page refresh
+
+    // grab the required fields
+
+    const user = currentUser.username;
+    const author = $("#author").val();
+    const title = $("#title").val();
+    const url = $("#url").val();
+
+    let newStory = new Story({
+      author: author,
+      url: url,
+      title: title,
+    });
+
+    const addedStory = await storyList.addStory(user, newStory);
+    currentUser = await User.getLoggedInUser(localToken, localUser);
+    await refreshStoryList();
+  }
+
+  $submitForm.on("submit", submitStoryToStoryList);
+
+  /**
+   * Event handler for displaying favorites
+   */
+
+  function showFavorites() {
+    showStories(currentUser.favorites);
+  }
+
+  $("body").on("click", "#nav-favorites", showFavorites);
+
+  /**
+   * Event handler for displaying favorites
+   */
+
+  function showMyCreatedStories() {
+    if (currentUser.myCreatedStories.length !== 0) {
+      showStories(currentUser.myCreatedStories);
+    } else {
+      hideElements();
+      $allStoriesList.empty().show();
+      $allStoriesList.text("No user created stories");
     }
   }
 
+  $("body").on("click", "#nav-my-stories", showMyCreatedStories);
+
   /**
-   * A rendering function to run to reset the forms and hide the login info
+   * Event handler for adding a favorite
    */
-
-  function loginAndSubmitForm() {
-    // hide the forms for logging in and signing up
-    $loginForm.hide();
-    $createAccountForm.hide();
-
-    // reset those forms
-    $loginForm.trigger("reset");
-    $createAccountForm.trigger("reset");
-
-    // show the stories
-    $allStoriesList.show();
-
-    // update the navigation bar
-    showNavForLoggedInUser();
+  async function modFavorite(evt) {
+    const storyId = evt.target.parentElement.id;
+    evt.target.classList.toggle("fas");
+    evt.target.classList.toggle("far");
+    if (evt.target.classList.contains("far")) {
+      currentUser = await User.modifyFavorite("DELETE", storyId);
+    } else {
+      currentUser = await User.modifyFavorite("POST", storyId);
+    }
   }
+
+  $allStoriesList.on("click", ".fa-star", modFavorite);
+
+  /**
+   * Event handler for deleting a story
+   */
+  async function deleteStory(evt) {
+    const storyId = evt.target.parentElement.id;
+    if (evt.target.classList.contains("fa-trash")) {
+      let deletedStory = await storyList.deleteStory(storyId);
+      currentUser = await User.getLoggedInUser(localToken, localUser);
+      await refreshStoryList();
+      window.alert("Story deleted");
+    }
+  }
+
+  $allStoriesList.on("click", ".fa-trash", deleteStory);
 
   /**
    * A rendering function to call the StoryList.getStories static method,
    *  which will generate a storyListInstance. Then render it.
    */
 
-  async function generateStories() {
+  async function refreshStoryList() {
+    hideElements();
+    $loadingMsg.show();
     // get an instance of StoryList
     const storyListInstance = await StoryList.getStories();
     // update our global variable
     storyList = storyListInstance;
-    // empty out that part of the page
-    $allStoriesList.empty();
+    showStories(storyList.stories);
+  }
+
+  function showStories(stories) {
+    hideElements();
+    $allStoriesList.empty().show();
 
     // loop through all of our stories and generate HTML for them
-    for (let story of storyList.stories) {
+    for (let story of stories) {
       const result = generateStoryHTML(story);
       $allStoriesList.append(result);
     }
@@ -158,20 +236,54 @@ $(async function () {
 
   function generateStoryHTML(story) {
     let hostName = getHostName(story.url);
+    let star = "";
+    let mine = "";
 
     // render story markup
-    const storyMarkup = $(`
+    if (currentUser) {
+      if (isFavorite(story.storyId)) {
+        star = '<i class="fas fa-star"></i>';
+      } else {
+        star = '<i class="far fa-star"></i>';
+      }
+      if (isMyCreatedStory(story.storyId)) {
+        mine = '<i class="fa fa-trash"> </i>';
+      }
+    }
+
+    let storyMarkup = $(`
       <li id="${story.storyId}">
+      ${star}
         <a class="article-link" href="${story.url}" target="a_blank">
-          <strong>${story.title}</strong>
+        <strong>${story.title}</strong>
         </a>
         <small class="article-author">by ${story.author}</small>
         <small class="article-hostname ${hostName}">(${hostName})</small>
+        ${mine}
         <small class="article-username">posted by ${story.username}</small>
+        
       </li>
     `);
-
     return storyMarkup;
+  }
+
+  function isFavorite(storyId) {
+    for (let favorite of currentUser.favorites) {
+      if (favorite.storyId === storyId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function isMyCreatedStory(storyId) {
+    for (let aStory of currentUser.myCreatedStories) {
+      console.log(aStory);
+      if (aStory.storyId === storyId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /* hide all elements in elementsArr */
@@ -180,18 +292,26 @@ $(async function () {
     const elementsArr = [
       $submitForm,
       $allStoriesList,
-      $allArticles,
+      $loadingMsg,
       $myCreatedStories,
       $loginForm,
-      $createAccountForm,
+      $signupForm,
     ];
     elementsArr.forEach(($elem) => $elem.hide());
   }
 
-  function showNavForLoggedInUser() {
-    $navLogin.hide();
-    $navLogOut.show();
-    $mainNavLinks.show();
+  function displayNav() {
+    if (currentUser) {
+      $navLoginSignup.hide();
+      $navLogOut.show();
+      $navUserProfile.text(currentUser.username);
+      $mainNavLinks.show();
+    } else {
+      $navLoginSignup.show();
+      $navLogOut.hide();
+      $navUserProfile.text("");
+      $mainNavLinks.hide();
+    }
   }
 
   /* simple function to pull the hostname from a URL */
