@@ -20,7 +20,9 @@ $(async function () {
   const $mainNavLinks = $(".main-nav-links");
   const $navUserProfile = $("#nav-user-profile");
 
-  currentUser = await User.getLoggedInUser(localToken, localUser);
+  if (currentUser) {
+    currentUser = await User.getLoggedInUser(localToken, localUser);
+  }
 
   displayNav();
   await refreshStoryList();
@@ -38,10 +40,14 @@ $(async function () {
     const password = $("#login-password").val();
 
     // call the login static method to build a user instance
-    const userInstance = await User.login(username, password);
+    let userInstance = "";
+    userInstance = await User.login(username, password);
+    console.log(`this is the userInstance: ${userInstance.token}`);
+    localToken = userInstance.token;
+    localUser = userInstance.user.username;
 
     // set the global user to the user instance
-    currentUser = userInstance;
+    currentUser = await User.getLoggedInUser(localToken, localUser);
     displayNav();
     $loginForm.trigger("reset");
     $signupForm.trigger("reset");

@@ -137,10 +137,14 @@ class User {
    */
 
   static async login(username, password) {
-    const response = await axios.post(`${BASE_URL}/login`, {
-      user: {
-        username,
-        password,
+    const response = await axios({
+      url: `${BASE_URL}/login`,
+      method: "POST",
+      data: {
+        user: {
+          username,
+          password,
+        },
       },
     });
 
