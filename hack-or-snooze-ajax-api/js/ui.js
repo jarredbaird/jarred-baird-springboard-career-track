@@ -1,12 +1,3 @@
-// global storyList variable
-let storyList = null;
-
-// global user variable
-let currentUser = null;
-
-let localToken = localStorage.getItem("token");
-let localUser = localStorage.getItem("username");
-
 $(async function () {
   // cache some selectors we'll be using quite a bit
   const $loadingMsg = $("#loading-msg");
@@ -20,8 +11,8 @@ $(async function () {
   const $mainNavLinks = $(".main-nav-links");
   const $navUserProfile = $("#nav-user-profile");
 
-  if (currentUser) {
-    currentUser = await User.getLoggedInUser(localToken, localUser);
+  if (localToken && localUser) {
+    currentUser = await User.getLoggedInUser();
   }
 
   displayNav();
@@ -40,17 +31,12 @@ $(async function () {
     const password = $("#login-password").val();
 
     // call the login static method to build a user instance
-    let userInstance = "";
-    userInstance = await User.login(username, password);
-    console.log(`this is the userInstance: ${userInstance.token}`);
-    localToken = userInstance.token;
-    localUser = userInstance.user.username;
+    let userInstance = await User.login(username, password);
 
     // set the global user to the user instance
-    currentUser = await User.getLoggedInUser(localToken, localUser);
+    currentUser = userInstance;
+    console.log("logging in...", currentUser.loginToken, currentUser.username);
     displayNav();
-    $loginForm.trigger("reset");
-    $signupForm.trigger("reset");
     syncCurrentUserToLocalStorage();
     await refreshStoryList();
   }
@@ -135,7 +121,6 @@ $(async function () {
 
     // grab the required fields
 
-    const user = currentUser.username;
     const author = $("#author").val();
     const title = $("#title").val();
     const url = $("#url").val();
@@ -146,8 +131,7 @@ $(async function () {
       title: title,
     });
 
-    const addedStory = await storyList.addStory(user, newStory);
-    currentUser = await User.getLoggedInUser(localToken, localUser);
+    const addedStory = await storyList.addStory(newStory);
     await refreshStoryList();
   }
 
@@ -199,10 +183,12 @@ $(async function () {
    * Event handler for deleting a story
    */
   async function deleteStory(evt) {
-    const storyId = evt.target.parentElement.id;
+    const targetStoryId = evt.target.parentElement.id;
     if (evt.target.classList.contains("fa-trash")) {
-      let deletedStory = await storyList.deleteStory(storyId);
-      currentUser = await User.getLoggedInUser(localToken, localUser);
+      await storyList.deleteStory(targetStoryId);
+      currentUser.myCreatedStories = currentUser.myCreatedStories.filter(
+        (story) => story.storyId !== targetStoryId
+      );
       await refreshStoryList();
       window.alert("Story deleted");
     }
@@ -252,7 +238,7 @@ $(async function () {
       } else {
         star = '<i class="far fa-star"></i>';
       }
-      if (isMyCreatedStory(story.storyId)) {
+      if (story.username === currentUser.username) {
         mine = '<i class="fa fa-trash"> </i>';
       }
     }
@@ -276,16 +262,6 @@ $(async function () {
   function isFavorite(storyId) {
     for (let favorite of currentUser.favorites) {
       if (favorite.storyId === storyId) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function isMyCreatedStory(storyId) {
-    for (let aStory of currentUser.myCreatedStories) {
-      console.log(aStory);
-      if (aStory.storyId === storyId) {
         return true;
       }
     }
@@ -339,7 +315,11 @@ $(async function () {
 
   function syncCurrentUserToLocalStorage() {
     if (currentUser) {
-      localStorage.setItem("token", currentUser.loginToken);
+      console.log("setting session data...");
+      localToken = currentUser.loginToken;
+      localUser = currentUser.username;
+      console.log("setting local storage...");
+      localStorage.setItem("loginToken", currentUser.loginToken);
       localStorage.setItem("username", currentUser.username);
     }
   }
