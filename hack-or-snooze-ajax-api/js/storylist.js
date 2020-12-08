@@ -51,6 +51,7 @@ class StoryList {
       },
     });
     this.stories.unshift(response.data.story);
+    return response.data;
   }
 
   /**

@@ -132,6 +132,7 @@ $(async function () {
     });
 
     const addedStory = await storyList.addStory(newStory);
+    currentUser.myCreatedStories.push(addedStory.story);
     await refreshStoryList();
   }
 
@@ -142,7 +143,13 @@ $(async function () {
    */
 
   function showFavorites() {
-    showStories(currentUser.favorites);
+    if (currentUser.favorites.length !== 0) {
+      showStories(currentUser.favorites);
+    } else {
+      hideElements();
+      $allStoriesList.empty().show();
+      $allStoriesList.text("No favorites yet");
+    }
   }
 
   $("body").on("click", "#nav-favorites", showFavorites);
@@ -171,10 +178,11 @@ $(async function () {
     evt.target.classList.toggle("fas");
     evt.target.classList.toggle("far");
     if (evt.target.classList.contains("far")) {
-      currentUser = await User.modifyFavorite("DELETE", storyId);
+      await User.modifyFavorite("DELETE", storyId);
     } else {
-      currentUser = await User.modifyFavorite("POST", storyId);
+      await User.modifyFavorite("POST", storyId);
     }
+    currentUser = await User.getLoggedInUser();
   }
 
   $allStoriesList.on("click", ".fa-star", modFavorite);
@@ -186,9 +194,13 @@ $(async function () {
     const targetStoryId = evt.target.parentElement.id;
     if (evt.target.classList.contains("fa-trash")) {
       await storyList.deleteStory(targetStoryId);
-      currentUser.myCreatedStories = currentUser.myCreatedStories.filter(
-        (story) => story.storyId !== targetStoryId
-      );
+      if (currentUser.myCreatedStories.length <= 1) {
+        currentUser.myCreatedStories = [];
+      } else {
+        currentUser.myCreatedStories = currentUser.myCreatedStories.filter(
+          (story) => story.storyId !== targetStoryId
+        );
+      }
       await refreshStoryList();
       window.alert("Story deleted");
     }
